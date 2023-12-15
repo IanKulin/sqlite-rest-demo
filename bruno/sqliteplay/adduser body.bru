@@ -1,0 +1,18 @@
+meta {
+  name: adduser body
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/adduser
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+  }
+}
