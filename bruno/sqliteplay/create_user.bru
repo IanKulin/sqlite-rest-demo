@@ -1,18 +1,18 @@
 meta {
-  name: adduser body
+  name: create_user
   type: http
   seq: 2
 }
 
 post {
-  url: http://localhost:3000/adduser
+  url: http://localhost:3000/users
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name": "John Doe",
+    "name": "hz Doe",
     "email": "john.doe@example.com"
   }
 }
