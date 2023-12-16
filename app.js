@@ -34,8 +34,8 @@ app.put('/user/:id', (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const email = req.body.email;
-  const sql = `UPDATE users SET name = "${name}", email = "${email}" WHERE rowid = ${id}`;
-  db.run(sql, (err) => {
+  const sql = `UPDATE users SET name = ?, email = ? WHERE rowid = ?`;
+  db.run(sql, [name, email, id], (err) => {
     if (err) {
       res.status(500).send(err.message);
     } else {
@@ -62,8 +62,8 @@ app.get('/users', (req, res) => {
 // expects an id in the URL
 app.get('/user/:id', (req, res) => {
   const id = req.params.id;
-  const sql = `SELECT rowid, * FROM users WHERE rowid = ${id}`;
-  db.get(sql, (err, row) => {
+  const sql = `SELECT rowid, * FROM users WHERE rowid = ?`;
+  db.get(sql, [id], (err, row) => {
     if (err) {
       res.status(500).send(err.message);
     } else {
@@ -77,8 +77,8 @@ app.get('/user/:id', (req, res) => {
 // expects an id in the URL. Doesn't complain if the id doesn't exist.
 app.delete('/user/:id', (req, res) => {
   const id = req.params.id;
-  const sql = `DELETE FROM users WHERE rowid = ${id}`;
-  db.run(sql, (err) => {
+  const sql = `DELETE FROM users WHERE rowid = ?`;
+  db.run(sql, [id], (err) => {
     if (err) {
       res.status(500).send(err.message);
     } else {
