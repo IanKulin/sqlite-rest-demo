@@ -1,0 +1,18 @@
+meta {
+  name: patch_user
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/user/8
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Fred",
+    "email": "fred88@example.com"
+  }
+}

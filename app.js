@@ -34,12 +34,64 @@ app.put('/user/:id', (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const email = req.body.email;
-  const sql = `UPDATE users SET name = ?, email = ? WHERE rowid = ?`;
-  db.run(sql, [name, email, id], (err) => {
+  const updateSql = `UPDATE users SET name = ?, email = ? WHERE rowid = ?`;
+  db.run(updateSql, [name, email, id], (err) => {
     if (err) {
       res.status(500).send(err.message);
     } else {
-      res.status(200).send('User updated.');
+      const selectSql = `SELECT rowid, * FROM users WHERE rowid = ?`;
+      db.get(selectSql, [id], (err, row) => {
+        if (err) {
+          res.status(500).send(err.message);
+        } else {
+          res.status(200).json(row);
+        }
+      });
+    }
+  });
+});
+
+
+// endpoint to update a user record in the users table in the database
+// expects a partial record in the JSON body of the request
+// expects an id in the URL
+app.patch('/user/:id', (req, res) => {
+  const id = req.params.id;
+  const name = req.body.name;
+  const email = req.body.email;
+  let fieldsToUpdate = [];
+  let values = [];
+
+  if (name !== undefined) {
+    fieldsToUpdate.push('name = ?');
+    values.push(name);
+  }
+
+  if (email !== undefined) {
+    fieldsToUpdate.push('email = ?');
+    values.push(email);
+  }
+
+  if (!fieldsToUpdate.length) {
+    res.status(400).send('No fields to update.');
+    return;
+  }
+
+  const sql = `UPDATE users SET ${fieldsToUpdate.join(', ')} WHERE rowid = ?`;
+  values.push(id);
+
+  db.run(sql, values, (err) => {
+    if (err) {
+      res.status(500).send(err.message);
+    } else {
+      const selectSql = `SELECT rowid, * FROM users WHERE rowid = ?`;
+      db.get(selectSql, [id], (err, row) => {
+        if (err) {
+          res.status(500).send(err.message);
+        } else {
+          res.status(200).json(row);
+        }
+      });
     }
   });
 });
